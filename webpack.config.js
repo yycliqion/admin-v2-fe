@@ -3,21 +3,23 @@ const webpack           = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-// let WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
-// console.log(WEBPACK_ENV); 
+let WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
+console.log(WEBPACK_ENV); 
 module.exports = {
     entry: './src/app.jsx',
     output: {
         path: path.resolve(__dirname, 'dist'),
         publicPath: 
-        // WEBPACK_ENV === 'dev' ? '/dist/' : '//s.jianliwu.com/admin-v2-fe/dist/',
-        '/dist/',
+        WEBPACK_ENV === 'dev' ? '/dist/' : '//s.jianliwu.com/admin-v2-fe/dist/',
+        // '/dist/',
         filename: 'js/app.js'
     },
     resolve: {
         alias : {
-            pages: path.resolve(__dirname, './src/pages'), 
+            pages        : path.resolve(__dirname, './src/pages'), 
             components   : path.resolve(__dirname, './src/compoments'),
+            utils        : path.resolve(__dirname, './src/utils'),
+            services     : path.resolve(__dirname, './src/services')
         }
     },
     module: {
@@ -96,15 +98,15 @@ module.exports = {
         historyApiFallback: {
             index: '/dist/index.html'
         },
-    //     proxy : {
-    //         '/manage' : {
-    //             target: 'http://admintest.happymmall.com',
-    //             changeOrigin : true
-    //         },
-    //         '/user/logout.do' : {
-    //             target: 'http://admintest.happymmall.com',
-    //             changeOrigin : true
-    //         }
-    //     }
+        proxy : {
+            '/manage' : {
+                target: 'http://admintest.happymmall.com',
+                changeOrigin : true
+            },
+            '/user/logout.do' : {
+                target: 'http://admintest.happymmall.com',
+                changeOrigin : true
+            }
+        }
     }
 };

@@ -4,24 +4,36 @@ import {BrowserRouter as Router, Switch, Route, Link, Redirect} from 'react-rout
 
 //页面
 import Home from 'pages/home/index.jsx';
+import Login from 'pages/login/index.jsx';
+import ProductRouter from 'pages/product/router.jsx';
+
+import UserList from 'pages/user/index.jsx';
+import ErrorPage from 'pages/error/index.jsx';
+
 import Layout from 'components/layout/index.jsx';
 
-
 class App extends React.Component {
-  render() {
-    return (
-      <Router>
-        <Layout>
-          <Switch>
-            <Route exact path="/" component={Home}/> 
-            <Route exact path="/product" component={Home}/> 
-            <Route exact path="/product.cotegpry" component={Home}/> 
-          </Switch>
-        </Layout>
-      </Router>
-    )
-  }
+    render() {
+        let LayoutRouter = (
+            <Layout>
+                <Switch>
+                    <Route exact path="/" component={Home}/>
+                    <Route path="/product" component={ProductRouter}/>
+                    <Route path="/user/index" component={UserList}/>
+                    <Redirect exact from="/user" to="/user/index"/>
+                    <Route component={ErrorPage}/>
+                </Switch>
+            </Layout>
+        );
+        return (
+            <Router>
+                <Switch>
+                    <Route path="/login" component={Login}/>
+                    <Route path="/" render={props => LayoutRouter}/>
+                </Switch>
+            </Router>
+        )
+    }
 }
-
 ReactDOM.render(
-  <App/>, document.getElementById('app'));
+    <App/>, document.getElementById('app'));
