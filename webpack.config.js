@@ -1,32 +1,33 @@
-const path = require('path');
-const webpack = require('webpack');
+ const path              = require('path');
+const webpack           = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-let WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
 
+let WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
+console.log(WEBPACK_ENV); 
 module.exports = {
     entry: './src/app.jsx',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        publicPath: '/dist/' ,
+        publicPath: 
+        WEBPACK_ENV === 'dev' ? '/dist/' : '//s.jianliwu.com/admin-v2-fe/dist/',
+        // '/dist/',
         filename: 'js/app.js'
     },
-
-    plugins: [
-        // 处理html文件 
-        new HtmlWebpackPlugin({
-            template: './src/index.html',
-            favicon: './favicon.ico'
-        })
-
-    ],
-
+    resolve: {
+        alias : {
+            pages        : path.resolve(__dirname, './src/pages'), 
+            components   : path.resolve(__dirname, './src/compoments'),
+            utils        : path.resolve(__dirname, './src/utils'),
+            services     : path.resolve(__dirname, './src/services')
+        }
+    },
     module: {
         rules: [
             // react(jsx)语法的处理
             {
                 test: /\.jsx$/,
-                exclude: /(node_modules )/,
+                exclude: /(node_modules)/,
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -53,29 +54,31 @@ module.exports = {
             // 图片的配置
             {
                 test: /\.(png|jpg|gif)$/,
-                use: [{
-                    loader: 'url-loader',
-                    options: {
-                        limit: 8192,
-                        name: 'resource/[name].[ext]'
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            name: 'resource/[name].[ext]'
+                        }
                     }
-                }]
+                ]
             },
-            //字体图标的配置
+            // 字体图标的配置
             {
                 test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
-                use: [{
-                    loader: 'url-loader',
-                    options: {
-                        limit: 8192,
-                        name: 'resource/[name].[ext]'
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            name: 'resource/[name].[ext]'
+                        }
                     }
-                }]
+                ]
             }
-
         ]
     },
-
     plugins: [
         // 处理html文件 
         new HtmlWebpackPlugin({
@@ -86,7 +89,7 @@ module.exports = {
         new ExtractTextPlugin("css/[name].css"),
         // 提出公共模块
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'common',
+            name : 'common',
             filename: 'js/base.js'
         })
     ],
@@ -95,15 +98,15 @@ module.exports = {
         historyApiFallback: {
             index: '/dist/index.html'
         },
-        // proxy: {
-        //     '/manage': {
-        //         target: 'http://admintest.happymmall.com',
-        //         changeOrigin: true
-        //     },
-        //     '/user/logout.do': {
-        //         target: 'http://admintest.happymmall.com',
-        //         changeOrigin: true
-        //     }
-        // }
+        proxy : {
+            '/manage' : {
+                target: 'http://admintest.happymmall.com',
+                changeOrigin : true
+            },
+            '/user/logout.do' : {
+                target: 'http://admintest.happymmall.com',
+                changeOrigin : true
+            }
+        }
     }
 };
